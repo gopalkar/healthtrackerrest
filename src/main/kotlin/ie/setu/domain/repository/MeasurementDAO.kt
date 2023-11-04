@@ -2,9 +2,11 @@ package ie.setu.domain.repository
 
 import ie.setu.domain.Activity
 import ie.setu.domain.Measurement
+import ie.setu.domain.db.Activities
 import ie.setu.domain.db.Measurements
 import ie.setu.utils.mapToMeasurement
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
 
@@ -47,6 +49,33 @@ class MeasurementDAO {
                 it[size] = activity.size
                 it[measuredDate] = activity.measuredDate
                 it[userId] = activity.userId
+            }
+        }
+    }
+
+    fun delete(id: Int):Int{
+        return transaction{
+            Measurements.deleteWhere{
+                Measurements.id eq id
+            }
+        }
+    }
+
+    fun deleteAll(userid: Int):Int{
+        return transaction{
+            Measurements.deleteWhere{
+                Measurements.userId eq userid
+            }
+        }
+    }
+
+    fun update(id: Int, measurement: Measurement){
+        transaction {
+            Measurements.update ({
+                Measurements.id eq id}) {
+                it[bodyPart] = measurement.bodyPart
+                it[size] = measurement.size
+                it[measuredDate] = measurement.measuredDate
             }
         }
     }

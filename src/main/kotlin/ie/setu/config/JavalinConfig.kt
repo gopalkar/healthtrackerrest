@@ -48,6 +48,28 @@ class JavalinConfig {
             path("/api/activities") {
                 get(HealthTrackerController::getAllActivities)
                 post(HealthTrackerController::addActivity)
+                path("{user-id}") {
+                    get(HealthTrackerController::getActivitiesByUserId)
+                    delete(HealthTrackerController::deleteActivitiesByUserId)
+                }
+            }
+            path("/api/activity/{activity-id}") {
+                get(HealthTrackerController::getActivitiesByActivityId)
+                delete(HealthTrackerController::deleteActivity)
+                patch(HealthTrackerController::updateActivity)
+            }
+            path("/api/measurements") {
+                get(HealthTrackerController::getAllMeasurements)
+                post(HealthTrackerController::addMeasurement)
+                path("{user-id}") {
+                    get(HealthTrackerController::getMeasurementsByUserId)
+                    delete(HealthTrackerController::deleteMeasurementsByUserId)
+                }
+            }
+            path("/api/measurement/{measurement-id}") {
+                get(HealthTrackerController::getMeasurementByMeasurementId)
+                delete(HealthTrackerController::deleteMeasurement)
+                patch(HealthTrackerController::updateMeasurement)
             }
         }
     }

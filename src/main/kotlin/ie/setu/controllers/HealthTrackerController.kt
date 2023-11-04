@@ -82,6 +82,42 @@ object HealthTrackerController {
         }
     }
 
+    fun getActivitiesByActivityId(ctx: Context) {
+        val activities = activityDAO.findByActivityId(ctx.pathParam("activity-id").toInt())
+        if (activities != null) {
+           //mapper handles the deserialization of Joda date into a String.
+           val mapper = jacksonObjectMapper()
+               .registerModule(JodaModule())
+               .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+           ctx.json(mapper.writeValueAsString(activities))
+        }
+    }
+
+    fun deleteActivitiesByUserId(ctx: Context) {
+        if (userDao.findById(ctx.pathParam("user-id").toInt()) != null) {
+            val activities = activityDAO.findByUserId(ctx.pathParam("user-id").toInt())
+            if (activities.isNotEmpty()) {
+                //mapper handles the deserialization of Joda date into a String.
+                activityDAO.deleteAll(ctx.pathParam("user-id").toInt())
+                ctx.json("""{"message":"Activities Deleted Successfully"}""")
+            }
+        }
+    }
+
+    fun updateActivity(ctx: Context) {
+        val mapper = jacksonObjectMapper()
+            .registerModule(JodaModule())
+            .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+        val activity = mapper.readValue<Activity>(ctx.body())
+        activityDAO.update(ctx.pathParam("activity-id").toInt(), activity)
+        ctx.json("""{"message":"Activity Updated Successfully"}""")
+    }
+
+    fun deleteActivity(ctx: Context) {
+        activityDAO.delete(ctx.pathParam("activity-id").toInt())
+        ctx.json("""{"message":"Activity Deleted Successfully"}""")
+    }
+
     fun addActivity(ctx: Context) {
         //mapper handles the serialisation of Joda date into a String.
         val mapper = jacksonObjectMapper()
@@ -89,7 +125,8 @@ object HealthTrackerController {
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
         val activity = mapper.readValue<Activity>(ctx.body())
         activityDAO.save(activity)
-        ctx.json(activity)
+        val retActivity = mapper.writeValueAsString(activity)
+        ctx.json(retActivity)
     }
 
 
@@ -118,6 +155,42 @@ object HealthTrackerController {
         }
     }
 
+    fun getMeasurementByMeasurementId(ctx: Context) {
+        val measurements = measurementDAO.findByMeasurementsId(ctx.pathParam("measurement-id").toInt())
+        if (measurements != null) {
+            //mapper handles the deserialization of Joda date into a String.
+            val mapper = jacksonObjectMapper()
+                .registerModule(JodaModule())
+                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+            ctx.json(mapper.writeValueAsString(measurements))
+        }
+    }
+
+    fun deleteMeasurementsByUserId(ctx: Context) {
+        if (userDao.findById(ctx.pathParam("user-id").toInt()) != null) {
+            val measurements = measurementDAO.findByUserId(ctx.pathParam("user-id").toInt())
+            if (measurements.isNotEmpty()) {
+                //mapper handles the deserialization of Joda date into a String.
+                measurementDAO.deleteAll(ctx.pathParam("user-id").toInt())
+                ctx.json("""{"message":"Measurements Deleted Successfully"}""")
+            }
+        }
+    }
+
+    fun updateMeasurement(ctx: Context) {
+        val mapper = jacksonObjectMapper()
+            .registerModule(JodaModule())
+            .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+        val measurement = mapper.readValue<Measurement>(ctx.body())
+        measurementDAO.update(ctx.pathParam("measurement-id").toInt(), measurement)
+        ctx.json("""{"message":"Measurement Updated Successfully"}""")
+    }
+
+    fun deleteMeasurement(ctx: Context) {
+        measurementDAO.delete(ctx.pathParam("measurement-id").toInt())
+        ctx.json("""{"message":"Measurement Deleted Successfully"}""")
+    }
+
     fun addMeasurement(ctx: Context) {
         //mapper handles the serialisation of Joda date into a String.
         val mapper = jacksonObjectMapper()
@@ -125,7 +198,8 @@ object HealthTrackerController {
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
         val measurement = mapper.readValue<Measurement>(ctx.body())
         measurementDAO.save(measurement)
-        ctx.json(measurement)
+        val retMeasurement = mapper.writeValueAsString(measurement)
+        ctx.json(retMeasurement)
     }
 
     //--------------------------------------------------------------
@@ -160,7 +234,8 @@ object HealthTrackerController {
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
         val nutrition = mapper.readValue<Nutrition>(ctx.body())
         nutritionDAO.save(nutrition)
-        ctx.json(nutrition)
+        val retNutrition = mapper.writeValueAsString(nutrition)
+        ctx.json(retNutrition)
     }
 
 }
