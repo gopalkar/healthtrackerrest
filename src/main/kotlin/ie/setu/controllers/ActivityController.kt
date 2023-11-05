@@ -36,6 +36,10 @@ object ActivityController {
         if (activities != null) {
             //mapper handles the deserialization of Joda date into a String.
             ctx.json(jsonObjectMapper().writeValueAsString(activities))
+            ctx.status(200)
+        }
+        else {
+            ctx.status(404)
         }
     }
 
@@ -57,15 +61,21 @@ object ActivityController {
     }
 
     fun deleteActivity(ctx: Context) {
-        ActivityController.activityDAO.delete(ctx.pathParam("activity-id").toInt())
-        ctx.json("""{"message":"Activity Deleted Successfully"}""")
+        if (ActivityController.activityDAO.delete(ctx.pathParam("activity-id").toInt()) != 0)
+            ctx.status(204)
+        else
+            ctx.status(404)
     }
 
     fun addActivity(ctx: Context) {
         //mapper handles the serialisation of Joda date into a String.
-        val activity = jsonToObject<Activity>(ctx.body())
-        ActivityController.activityDAO.save(activity)
-        ctx.json(activity)
+        val activity: Activity = jsonToObject(ctx.body())
+        val activityId = ActivityController.activityDAO.save(activity)
+        if (activityId != null) {
+            activity.id = activityId
+            ctx.json(activity)
+            ctx.status(201)
+        }
     }
 
 }
