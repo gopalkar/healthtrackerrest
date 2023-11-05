@@ -75,6 +75,19 @@ class JavalinConfig {
                 delete(MeasurementController::deleteMeasurement)
                 patch(MeasurementController::updateMeasurement)
             }
+            path("/api/nutritions") {
+                get(NutritionController::getAllNutritions)
+                post(NutritionController::addNutrition)
+                path("{user-id}") {
+                    get(NutritionController::getNutritionsByUserId)
+                    delete(NutritionController::deleteNutritionsByUserId)
+                }
+            }
+            path("/api/nutrition/{nutrition-id}") {
+                get(NutritionController::getNutritionByNutritionId)
+                delete(NutritionController::deleteNutrition)
+                patch(NutritionController::updateNutrition)
+            }
         }
     }
 }

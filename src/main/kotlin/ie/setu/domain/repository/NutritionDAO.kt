@@ -4,6 +4,7 @@ import ie.setu.domain.Nutrition
 import ie.setu.domain.db.Nutritions
 import ie.setu.utils.mapToNutrition
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
 
@@ -47,6 +48,34 @@ class NutritionDAO {
                 it[calories] = nutrition.calories
                 it[macroDate] = nutrition.macroDate
                 it[userId] = nutrition.userId
+            }
+        }
+    }
+
+    fun delete(id: Int):Int{
+        return transaction{
+            Nutritions.deleteWhere{
+                Nutritions.id eq id
+            }
+        }
+    }
+
+    fun deleteAll(userid: Int):Int{
+        return transaction{
+            Nutritions.deleteWhere{
+                Nutritions.userId eq userid
+            }
+        }
+    }
+
+    fun update(id: Int, nutrition: Nutrition){
+        transaction {
+            Nutritions.update ({
+                Nutritions.id eq id}) {
+                it[partOfDay] = nutrition.partOfDay
+                it[foodName] = nutrition.foodName
+                it[calories] = nutrition.calories
+                it[macroDate] = nutrition.macroDate
             }
         }
     }
