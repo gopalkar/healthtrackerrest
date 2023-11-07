@@ -145,7 +145,7 @@ class UserDAOTest {
                 assertEquals(null, userDAO.findByEmail(nonExistingEmail))
             }
         }
-
+        //test
         @Test
         fun `get user by email that exists, results in correct user returned`() {
             transaction {
