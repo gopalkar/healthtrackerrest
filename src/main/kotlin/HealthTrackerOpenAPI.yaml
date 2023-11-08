@@ -1,9 +1,208 @@
-openapi: 3.0.3
+openapi: 3.0.0
 info:
-  title: Title
-  description: Title
   version: 1.0.0
-servers:
-  - url: 'https'
+  title: Health Tracker API
+  description: This API provides endpoints for handling CRUD operations on the Health Tracker data.
+  contact:
+    name: Karthikeyan Gopal
+    email: 20099187@mail.wit.ie
 paths:
-  
+  /api/users/{user-id}:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      responses:
+        200:
+          description: This is a user for given id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        404:
+          description: User Not Found
+    patch:
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        204:
+          description: This user has been updated
+        404:
+          description: Failed to update User
+    delete:
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      responses:
+        204:
+          description: This user has been deleted
+        404:
+          description: Failed to delete User
+  /api/users:
+    get:
+      responses:
+        200:
+          description: This is a list of users in the app
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        404:
+          description: No user records found
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        201:
+          description: The user has been created
+  /api/users/{email-id}:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/EmailIdPath'
+      responses:
+        200:
+          description: This is the user for given email
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        404:
+          description: User not found for given email-id
+  /api/activities/{user-id}:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      responses:
+        200:
+          description: These are the activities for given user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Activity'
+        404:
+          description: Activities not found for given user-id
+    delete:
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      responses:
+        204:
+          description: All activities for given user has been deleted
+        404:
+          description: Activities not found for given user
+  /api/actvities:
+    get:
+      responses:
+        200:
+          description: These are the activities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Activity'
+        404:
+          description: No activities found
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Activity'
+      responses:
+        201:
+          description: This activity has been added
+  /api/activity/{activity-id}:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/ActivityIdPath'
+      responses:
+        200:
+          description: This is the activity for given id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Activity'
+    delete:
+      parameters:
+        - $ref: '#/components/parameters/ActivityIdPath'
+      responses:
+        200:
+          description: This activity has been deletd
+    patch:
+      parameters:
+        - $ref: '#/components/parameters/ActivityIdPath'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Activity'
+      responses:
+        200:
+          description: This activity has been updated
+components:
+  parameters:
+    UserIdPath:
+      in: path
+      name: user-id
+      required: true
+      schema:
+        type: integer
+        example: 2023
+    EmailIdPath:
+      in: path
+      name: email-id
+      required: true
+      schema:
+        type: string
+        example: john.smith@gmail.com
+    ActivityIdPath:
+      in: path
+      name: activity-id
+      required: true
+      schema:
+        type: integer
+        example: 202301
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 2023
+        name:
+          type: string
+          example: John Smith
+        email:
+          type: string
+          example: john.smith@gmail.com
+    Activity:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 2023
+        description:
+          type: string
+          example: running
+        duration:
+          type: integer
+          example: 60
+        calories:
+          type: integer
+          example: 200
+        date:
+          type: string
+          example: 2023/10/10
+        user-id:
+          type: integer
+          example: 2023
