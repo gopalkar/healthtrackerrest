@@ -1,5 +1,6 @@
 package ie.setu.domain
 
+import org.joda.time.DateTime
 import java.util.Date
 
 data class User (
@@ -7,7 +8,7 @@ data class User (
     var name: String,
     var email: String,
     var gender: String,
-    var birthDate: Date,
+    var birthDate: DateTime,
     var mobileNumber: String,
     var dietPreferences: String,
     var height: Double,

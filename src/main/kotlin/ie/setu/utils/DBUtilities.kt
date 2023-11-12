@@ -10,11 +10,19 @@ import ie.setu.domain.db.Nutritions
 import ie.setu.domain.db.Users
 import org.jetbrains.exposed.sql.ResultRow
 import org.joda.time.DateTime
+import java.util.*
 
 fun mapToUser(it: ResultRow) = User(
     id = it[Users.id],
     name = it[Users.name],
-    email = it[Users.email]
+    email = it[Users.email],
+    gender = it[Users.gender],
+    birthDate = it[Users.birthDate],
+    mobileNumber = it[Users.mobileNumber],
+    dietPreferences = it[Users.dietPreferences],
+    height = it[Users.height],
+    weight = it[Users.weight],
+    profession = it[Users.profession]
 )
 
 fun mapToActivity(it: ResultRow) = Activity(
