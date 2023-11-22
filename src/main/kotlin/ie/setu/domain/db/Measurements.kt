@@ -8,8 +8,15 @@ import org.jetbrains.exposed.sql.Table
 
 object Measurements : Table("measurements") {
     val id = integer("id").autoIncrement().primaryKey()
-    val bodyPart = varchar("body_part", 100)
-    val size = double("size")
+    val weight = double("weight")
+    val chest = double("chest")
+    val bicep = double("bicep")
+    val neck = double("neck")
+    val abdomen = double("abdomen")
+    val waist = double("waist")
+    val lowerWaist = double("lowerWaist")
+    val thigh = double("thigh")
+    val cough = double("cough")
     val measuredDate = datetime("measured_date")
     val userId = integer("user_id").references(Users.id, onDelete = ReferenceOption.CASCADE)
 }

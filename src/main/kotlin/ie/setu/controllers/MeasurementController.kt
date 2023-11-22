@@ -6,6 +6,7 @@ import ie.setu.domain.repository.UserDAO
 import ie.setu.utils.jsonObjectMapper
 import ie.setu.utils.jsonToObject
 import io.javalin.http.Context
+import org.joda.time.DateTime
 
 object MeasurementController {
 
@@ -33,6 +34,14 @@ object MeasurementController {
         }
     }
 
+    fun getMeasurementsByDate(ctx: Context) {
+        val measurements = MeasurementController.measurementDAO.findByDate(DateTime(ctx.pathParam("start-date")), DateTime(ctx.pathParam("end-date")))
+        if (measurements.isNotEmpty()) {
+            //mapper handles the deserialization of Joda date into a String.
+            val mapper = jsonObjectMapper()
+            ctx.json(mapper.writeValueAsString(measurements))
+        }
+    }
     fun getMeasurementByMeasurementId(ctx: Context) {
         val measurements = MeasurementController.measurementDAO.findByMeasurementsId(ctx.pathParam("measurement-id").toInt())
         if (measurements != null) {

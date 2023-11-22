@@ -1,13 +1,7 @@
 package ie.setu.utils
 
-import ie.setu.domain.Activity
-import ie.setu.domain.Measurement
-import ie.setu.domain.Nutrition
-import ie.setu.domain.User
-import ie.setu.domain.db.Activities
-import ie.setu.domain.db.Measurements
-import ie.setu.domain.db.Nutritions
-import ie.setu.domain.db.Users
+import ie.setu.domain.*
+import ie.setu.domain.db.*
 import org.jetbrains.exposed.sql.ResultRow
 import org.joda.time.DateTime
 import java.util.*
@@ -23,6 +17,12 @@ fun mapToUser(it: ResultRow) = User(
     height = it[Users.height],
     weight = it[Users.weight],
     profession = it[Users.profession]
+)
+
+fun mapToUserCred(it: ResultRow) = UserCred(
+    id = it[UserCreds.id],
+    password = it[UserCreds.password],
+    userId = it[UserCreds.userId]
 )
 
 fun mapToActivity(it: ResultRow) = Activity(
@@ -45,8 +45,15 @@ fun mapToNutrition(it: ResultRow) = Nutrition(
 
 fun mapToMeasurement(it: ResultRow) = Measurement(
     id = it[Measurements.id],
-    bodyPart = it[Measurements.bodyPart],
-    size = it[Measurements.size],
+    weight = it[Measurements.weight],
+    chest = it[Measurements.chest],
+    bicep = it[Measurements.bicep],
+    neck = it[Measurements.neck],
+    abdomen = it[Measurements.abdomen],
+    waist = it[Measurements.waist],
+    lowerWaist = it[Measurements.lowerWaist],
+    thigh = it[Measurements.thigh],
+    cough = it[Measurements.cough],
     measuredDate = it[Measurements.measuredDate],
     userId = it[Measurements.userId]
 )
