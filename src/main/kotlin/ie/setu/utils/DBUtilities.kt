@@ -3,8 +3,6 @@ package ie.setu.utils
 import ie.setu.domain.*
 import ie.setu.domain.db.*
 import org.jetbrains.exposed.sql.ResultRow
-import org.joda.time.DateTime
-import java.util.*
 
 fun mapToUser(it: ResultRow) = User(
     id = it[Users.id],

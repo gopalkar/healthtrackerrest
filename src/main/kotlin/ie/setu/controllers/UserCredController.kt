@@ -1,10 +1,8 @@
 package ie.setu.controllers
-import com.fasterxml.jackson.module.kotlin.readValue
 import ie.setu.domain.UserCred
 import ie.setu.domain.repository.UserCredDAO
-import io.javalin.http.Context
-import ie.setu.utils.jsonObjectMapper
 import ie.setu.utils.jsonToObject
+import io.javalin.http.Context
 
 object UserCredController {
 

@@ -14,7 +14,7 @@ object Measurements : Table("measurements") {
     val neck = double("neck")
     val abdomen = double("abdomen")
     val waist = double("waist")
-    val lowerWaist = double("lowerWaist")
+    val lowerWaist = double("lowerwaist")
     val thigh = double("thigh")
     val cough = double("cough")
     val measuredDate = datetime("measured_date")

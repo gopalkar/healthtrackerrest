@@ -3,8 +3,11 @@ package ie.setu.domain.repository
 import ie.setu.domain.UserCred
 import ie.setu.domain.db.UserCreds
 import ie.setu.utils.mapToUserCred
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 
 class UserCredDAO {
 

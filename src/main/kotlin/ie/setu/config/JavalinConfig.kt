@@ -1,10 +1,6 @@
 package ie.setu.config
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import ie.setu.controllers.ActivityController
-import ie.setu.controllers.UserController
-import ie.setu.controllers.MeasurementController
-import ie.setu.controllers.NutritionController
+import ie.setu.controllers.*
 import ie.setu.utils.jsonObjectMapper
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.*
@@ -52,6 +48,14 @@ class JavalinConfig {
                     get(UserController::getUserByUserId)
                     delete(UserController::deleteUser)
                     patch(UserController::updateUser)
+                }
+            }
+            path("/api/usercreds") {
+                post(UserCredController::addUserCred)
+                path("{user-id}") {
+                    get(UserCredController::getUserCredByUserId)
+                    delete(UserCredController::deleteUserCred)
+                    patch(UserCredController::updateUserCred)
                 }
             }
             path("/api/users/email") {
