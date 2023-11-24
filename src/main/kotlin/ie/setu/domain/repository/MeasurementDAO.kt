@@ -30,10 +30,10 @@ class MeasurementDAO {
     }
 
     //Find measurements between specific dates
-    fun findByDate(startDate: DateTime, endDate: DateTime): List<Measurement>{
+    fun findByDate(userId: Int, startDate: DateTime, endDate: DateTime): List<Measurement>{
         return transaction {
             Measurements
-                .select() { (Measurements.measuredDate greaterEq startDate) and (Measurements.measuredDate lessEq endDate) }
+                .select() { (Measurements.userId eq userId) and (Measurements.measuredDate greaterEq startDate) and (Measurements.measuredDate lessEq endDate) }
                 .map{mapToMeasurement(it)}
         }
     }
@@ -60,7 +60,7 @@ class MeasurementDAO {
                 it[lowerWaist] = measurement.lowerWaist
                 it[thigh] = measurement.thigh
                 it[cough] = measurement.cough
-                it[measuredDate] = measurement.measuredDate
+                it[measuredDate] = DateTime.parse(measurement.measuredDate.toString())
                 it[userId] = measurement.userId
             }
         }
@@ -95,7 +95,7 @@ class MeasurementDAO {
                 it[lowerWaist] = measurement.lowerWaist
                 it[thigh] = measurement.thigh
                 it[cough] = measurement.cough
-                it[measuredDate] = measurement.measuredDate
+                it[measuredDate] = DateTime.parse(measurement.measuredDate.toString())
             }
         }
     }

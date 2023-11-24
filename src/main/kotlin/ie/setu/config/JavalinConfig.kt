@@ -80,7 +80,7 @@ class JavalinConfig {
                 get(MeasurementController::getAllMeasurements)
                 post(MeasurementController::addMeasurement)
                 path("{user-id}") {
-                    get(MeasurementController::getMeasurementsByUserId)
+                    get(MeasurementController::getMeasurementsByDate)
                     delete(MeasurementController::deleteMeasurementsByUserId)
                 }
             }

@@ -31,6 +31,13 @@ class UserDAO {
             Users.insert {
                 it[name] = user.name
                 it[email] = user.email
+                it[gender] = user.gender
+                it[birthDate] = user.birthDate
+                it[mobileNumber] = user.mobileNumber
+                it[dietPreferences] = user.dietPreferences
+                it[height] = user.height
+                it[weight] = user.weight
+                it[profession] = user.profession
             } get Users.id
         }
     }
@@ -58,6 +65,13 @@ class UserDAO {
                 Users.id eq id}) {
                 it[name] = user.name
                 it[email] = user.email
+                it[gender] = user.gender
+                it[birthDate] = user.birthDate
+                it[mobileNumber] = user.mobileNumber
+                it[dietPreferences] = user.dietPreferences
+                it[height] = user.height
+                it[weight] = user.weight
+                it[profession] = user.profession
             }
         }
     }
