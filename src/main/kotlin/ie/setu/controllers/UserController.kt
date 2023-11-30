@@ -1,10 +1,8 @@
 package ie.setu.controllers
-import com.fasterxml.jackson.module.kotlin.readValue
-import ie.setu.domain.repository.UserDAO
 import ie.setu.domain.User
-import io.javalin.http.Context
-import ie.setu.utils.jsonObjectMapper
+import ie.setu.domain.repository.UserDAO
 import ie.setu.utils.jsonToObject
+import io.javalin.http.Context
 
 object UserController {
 
@@ -62,7 +60,7 @@ object UserController {
 
     fun updateUser(ctx: Context) {
         val foundUser : User = jsonToObject(ctx.body())
-        if ((userDao.update(id = ctx.pathParam("user-id").toInt(), user=foundUser)) != 0)
+        if ((userDao.update(id = ctx.pathParam("user-id").toInt(), user = foundUser)) != 0)
             ctx.status(204)
         else
             ctx.status(404)

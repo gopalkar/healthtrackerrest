@@ -1,12 +1,9 @@
 package ie.setu.domain.repository
 
-import ie.setu.domain.Activity
 import ie.setu.domain.Measurement
-import ie.setu.domain.db.Activities
 import ie.setu.domain.db.Measurements
 import ie.setu.utils.mapToMeasurement
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
 
@@ -32,6 +29,15 @@ class MeasurementDAO {
         }
     }
 
+    //Find measurements between specific dates
+    fun findByDate(userId: Int, startDate: DateTime, endDate: DateTime): List<Measurement>{
+        return transaction {
+            Measurements
+                .select() { (Measurements.userId eq userId) and (Measurements.measuredDate greaterEq startDate) and (Measurements.measuredDate lessEq endDate) }
+                .map{mapToMeasurement(it)}
+        }
+    }
+
     //Find all measurements for a specific user id
     fun findByUserId(userId: Int): List<Measurement>{
         return transaction {
@@ -42,13 +48,20 @@ class MeasurementDAO {
     }
 
     //Save an Measurement to the database
-    fun save(activity: Measurement){
+    fun save(measurement: Measurement){
         transaction {
             Measurements.insert {
-                it[bodyPart] = activity.bodyPart
-                it[size] = activity.size
-                it[measuredDate] = activity.measuredDate
-                it[userId] = activity.userId
+                it[weight] = measurement.weight
+                it[chest] = measurement.chest
+                it[bicep] = measurement.bicep
+                it[neck] = measurement.neck
+                it[abdomen] = measurement.abdomen
+                it[waist] = measurement.waist
+                it[lowerWaist] = measurement.lowerWaist
+                it[thigh] = measurement.thigh
+                it[cough] = measurement.cough
+                it[measuredDate] = DateTime.parse(measurement.measuredDate.toString())
+                it[userId] = measurement.userId
             }
         }
     }
@@ -73,9 +86,16 @@ class MeasurementDAO {
         transaction {
             Measurements.update ({
                 Measurements.id eq id}) {
-                it[bodyPart] = measurement.bodyPart
-                it[size] = measurement.size
-                it[measuredDate] = measurement.measuredDate
+                it[weight] = measurement.weight
+                it[chest] = measurement.chest
+                it[bicep] = measurement.bicep
+                it[neck] = measurement.neck
+                it[abdomen] = measurement.abdomen
+                it[waist] = measurement.waist
+                it[lowerWaist] = measurement.lowerWaist
+                it[thigh] = measurement.thigh
+                it[cough] = measurement.cough
+                it[measuredDate] = DateTime.parse(measurement.measuredDate.toString())
             }
         }
     }

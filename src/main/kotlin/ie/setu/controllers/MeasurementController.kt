@@ -6,6 +6,8 @@ import ie.setu.domain.repository.UserDAO
 import ie.setu.utils.jsonObjectMapper
 import ie.setu.utils.jsonToObject
 import io.javalin.http.Context
+import org.joda.time.DateTime
+import java.time.format.DateTimeFormatter
 
 object MeasurementController {
 
@@ -17,9 +19,9 @@ object MeasurementController {
     //-------------------------------------------------------------
 
     fun getAllMeasurements(ctx: Context) {
-        //mapper handles the deserialization of Joda date into a String.
+     //mapper handles the deserialization of Joda date into a String.
         val mapper = jsonObjectMapper()
-        ctx.json(mapper.writeValueAsString( MeasurementController.measurementDAO.getAll() ))
+        ctx.json(mapper.writeValueAsString(MeasurementController.measurementDAO.getAll()))
     }
 
     fun getMeasurementsByUserId(ctx: Context) {
@@ -30,6 +32,38 @@ object MeasurementController {
                 val mapper = jsonObjectMapper()
                 ctx.json(mapper.writeValueAsString(measurements))
             }
+        }
+    }
+
+    fun getMeasurementsByDate(ctx: Context) {
+        if (MeasurementController.userDao.findById(ctx.pathParam("user-id").toInt()) != null) {
+            val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+            val startDateTime: DateTime = DateTime.parse(ctx.queryParam("start-date"))
+            val endDateTime: DateTime = DateTime.parse(ctx.queryParam("end-date"))
+            val mapper = jsonObjectMapper()
+            if (startDateTime != null) {
+                ctx.status(200)
+                ctx.json(
+                    mapper.writeValueAsString(
+                        MeasurementController.measurementDAO.findByDate(
+                            ctx.pathParam("user-id").toInt(),
+                            startDateTime,
+                            endDateTime
+                        )
+                    )
+                )
+            }
+            else {
+                val measurements = MeasurementController.measurementDAO.findByUserId(ctx.pathParam("user-id").toInt())
+                if (measurements.isNotEmpty()) {
+                    //mapper handles the deserialization of Joda date into a String.
+                    val mapper = jsonObjectMapper()
+                    ctx.json(mapper.writeValueAsString(measurements))
+                }
+            }
+        }
+        else {
+            ctx.status(404)
         }
     }
 
