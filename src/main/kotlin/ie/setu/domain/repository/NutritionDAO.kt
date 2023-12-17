@@ -4,7 +4,6 @@ import ie.setu.domain.Nutrition
 import ie.setu.domain.db.Nutritions
 import ie.setu.utils.mapToNutrition
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
 
@@ -30,6 +29,14 @@ class NutritionDAO {
         }
     }
 
+    //Find set of nutritions consumed on a specific date or a period
+    fun findByDate(userId: Int, startDate: DateTime, endDate: DateTime): List<Nutrition>{
+        return transaction {
+            Nutritions
+                .select() { (Nutritions.userId eq userId) and (Nutritions.macroDate greaterEq startDate) and (Nutritions.macroDate lessEq endDate) }
+                .map{ mapToNutrition(it) }
+        }
+    }
     //Find all nutritions for a specific user id
     fun findByUserId(userId: Int): List<Nutrition>{
         return transaction {

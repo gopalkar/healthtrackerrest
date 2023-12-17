@@ -93,7 +93,7 @@ class JavalinConfig {
                 get(NutritionController::getAllNutritions)
                 post(NutritionController::addNutrition)
                 path("{user-id}") {
-                    get(NutritionController::getNutritionsByUserId)
+                    get(NutritionController::getNutritionsByDate)
                     delete(NutritionController::deleteNutritionsByUserId)
                 }
             }

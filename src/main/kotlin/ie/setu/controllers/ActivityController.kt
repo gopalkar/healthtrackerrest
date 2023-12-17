@@ -1,10 +1,10 @@
 package ie.setu.controllers
-import ie.setu.domain.repository.UserDAO
-import io.javalin.http.Context
 import ie.setu.domain.Activity
 import ie.setu.domain.repository.ActivityDAO
+import ie.setu.domain.repository.UserDAO
 import ie.setu.utils.jsonObjectMapper
 import ie.setu.utils.jsonToObject
+import io.javalin.http.Context
 
 object ActivityController {
 
@@ -27,6 +27,10 @@ object ActivityController {
             if (activities.isNotEmpty()) {
                 //mapper handles the deserialization of Joda date into a String.
                 ctx.json(jsonObjectMapper().writeValueAsString(activities))
+                ctx.status(200)
+            }
+            else {
+                ctx.status(404)
             }
         }
     }
