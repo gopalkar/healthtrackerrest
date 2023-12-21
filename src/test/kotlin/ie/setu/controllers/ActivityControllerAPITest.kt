@@ -92,7 +92,7 @@ class ActivityControllerAPITest {
             @Test
             fun `get activity by user-id when activity does not exist returns 404 response`() {
 
-                val id = 51
+                val id = 1001
 
                 // Arrange & Act - attempt to retrieve the non-existent user from the database
                 val retrieveResponse = retrieveActivityByUser(id)
@@ -117,11 +117,10 @@ class ActivityControllerAPITest {
 
                 val retrievedActivity: Activity = jsonToObject(addActivityResponse.body.toString())
                 val retrieveActivityResponse = retrieveActivityByUser(retrievedActivity.userId)
+                assertEquals(200, retrieveActivityResponse.status)
                 if (retrieveActivityResponse.status == 200) {
                     val retrievedActivities: ArrayList<Activity> = jsonToObject(retrieveActivityResponse.body.toString())
                     assertNotEquals(0, retrievedActivities.size)
-                } else {
-                    assertEquals(404, retrieveActivityResponse.status)
                 }
 
                 //After - restore the db to previous state by deleting the added user
@@ -208,6 +207,8 @@ class ActivityControllerAPITest {
 
                 //Act & Assert - attempt to retrieve the deleted user --> 404 response
                 assertEquals(404, retrieveActivityById(retrievedActivity.id).status)
+
+                deleteUser(retrievedUser.id)
             }
         }
 

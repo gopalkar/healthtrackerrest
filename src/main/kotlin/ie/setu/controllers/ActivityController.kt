@@ -32,6 +32,10 @@ object ActivityController {
             else {
                 ctx.status(404)
             }
+
+        }
+        else {
+            ctx.status(404)
         }
     }
 
