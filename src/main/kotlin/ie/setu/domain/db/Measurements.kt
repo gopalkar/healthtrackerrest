@@ -16,7 +16,7 @@ object Measurements : Table("measurements") {
     val waist = double("waist")
     val lowerWaist = double("lowerwaist")
     val thigh = double("thigh")
-    val cough = double("cough")
+    val calves = double("calves")
     val measuredDate = datetime("measured_date")
     val userId = integer("user_id").references(Users.id, onDelete = ReferenceOption.CASCADE)
 }

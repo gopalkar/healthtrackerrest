@@ -51,7 +51,7 @@ fun mapToMeasurement(it: ResultRow) = Measurement(
     waist = it[Measurements.waist],
     lowerWaist = it[Measurements.lowerWaist],
     thigh = it[Measurements.thigh],
-    cough = it[Measurements.cough],
+    calves = it[Measurements.calves],
     measuredDate = it[Measurements.measuredDate],
     userId = it[Measurements.userId]
 )

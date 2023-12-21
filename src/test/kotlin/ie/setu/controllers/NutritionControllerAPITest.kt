@@ -1,6 +1,7 @@
 package ie.setu.controllers
 
 import ie.setu.config.DbConfig
+import ie.setu.domain.Activity
 import ie.setu.domain.User
 import ie.setu.helpers.*
 import ie.setu.utils.jsonToObject
@@ -15,103 +16,118 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class UserControllerAPITest {
+class NutritionControllerAPITest {
 
     private val db = DbConfig().getDbConnection()
     private val app = ServerContainer.instance
     private val origin = "http://localhost:" + app.port()
 
     val user1 = users.get(0)
+    val activity1 = activities.get(0)
+
     @Nested
-    inner class TestUsers {
+    inner class TestActivities {
+
         @Nested
-        inner class ReadUsers {
+        inner class CreateActivities {
             @Test
-            fun `get all users from the database returns 200 or 404 response`() {
-                val response = Unirest.get(origin + "/api/users/").asString()
+            fun `add a activity with correct details returns a 201 response`() {
+
+                //Arrange & Act & Assert
+                //    add the user and verify return code (using fixture data)
+                val addUserResponse = addUser(user1)
+
+                //    add the user and verify return code (using fixture data)
+                val retrievedUser: User = jsonToObject(addUserResponse.body.toString())
+                activity1.userId = retrievedUser.id
+                val addActivityResponse = addActivity(activity1)
+                assertEquals(201, addActivityResponse.status)
+
+                //Assert - retrieve the added user from the database and verify return code
+                val retrievedActivity: Activity = jsonToObject(addActivityResponse.body.toString())
+                val retrieveActivityResponse = retrieveActivityById(retrievedActivity.id)
+                assertEquals(200, retrieveActivityResponse.status)
+
+                //Assert - verify the contents of the retrieved user
+                assertEquals(activity1.description, retrievedActivity.description)
+                assertEquals(activity1.duration, retrievedActivity.duration)
+                assertEquals(activity1.calories, retrievedActivity.calories)
+
+                //After - restore the db to previous state by deleting the added user
+                val deleteResponse = deleteActivity(retrievedActivity.id)
+                assertEquals(204, deleteResponse.status)
+
+                deleteUser(retrievedUser.id)
+            }
+
+        }
+
+        @Nested
+        inner class ReadActivities {
+            @Test
+            fun `get all activities from the database returns 200 or 404 response`() {
+                val response = Unirest.get(origin + "/api/activities/").asString()
                 if (response.status == 200) {
-                    val retrievedUsers: ArrayList<User> = jsonToObject(response.body.toString())
-                    assertNotEquals(0, retrievedUsers.size)
+                    val retrievedActivities: ArrayList<Activity> = jsonToObject(response.body.toString())
+                    assertNotEquals(0, retrievedActivities.size)
                 } else {
                     assertEquals(404, response.status)
                 }
             }
 
             @Test
-            fun `get user by id when user does not exist returns 404 response`() {
+            fun `get activity by id when activity does not exist returns 404 response`() {
 
                 //Arrange - test data for user id
                 val id = Integer.MIN_VALUE
 
                 // Act - attempt to retrieve the non-existent user from the database
-                val retrieveResponse = retrieveUserById(id)
+                val retrieveResponse = retrieveActivityById(id)
 
                 // Assert -  verify return code
                 assertEquals(404, retrieveResponse.status)
             }
 
             @Test
-            fun `get user by email when user does not exist returns 404 response`() {
+            fun `get activity by user-id when activity does not exist returns 404 response`() {
+
+                val id = 51
+
                 // Arrange & Act - attempt to retrieve the non-existent user from the database
-                val retrieveResponse = retrieveUserByEmail(nonExistingEmail)
+                val retrieveResponse = retrieveActivityByUser(id)
 
                 // Assert -  verify return code
                 assertEquals(404, retrieveResponse.status)
             }
 
             @Test
-            fun `getting a user by id when id exists, returns a 200 response`() {
-
-                //Arrange - add the user
-                val addResponse = addUser(user1)
-                val addedUser: User = jsonToObject(addResponse.body.toString())
-
-                //Assert - retrieve the added user from the database and verify return code
-                val retrieveResponse = retrieveUserById(addedUser.id)
-                assertEquals(200, retrieveResponse.status)
-
-                //After - restore the db to previous state by deleting the added user
-                deleteUser(addedUser.id)
-            }
-
-            @Test
-            fun `getting a user by email when email exists, returns a 200 response`() {
-
-                //Arrange - add the user
-                addUser(user1)
-
-                //Assert - retrieve the added user from the database and verify return code
-                val retrieveResponse = retrieveUserByEmail(validEmail)
-                assertEquals(200, retrieveResponse.status)
-
-                //After - restore the db to previous state by deleting the added user
-                val retrievedUser: User = jsonToObject(retrieveResponse.body.toString())
-                deleteUser(retrievedUser.id)
-            }
-        }
-
-        @Nested
-        inner class CreateUsers {
-            @Test
-            fun `add a user with correct details returns a 201 response`() {
+            fun `getting a activity by user-id when activity exists, returns a 200 response`() {
 
                 //Arrange & Act & Assert
-                //    add the user and verify return code (using fixture data)
-                val addResponse = addUser(user1)
-                assertEquals(201, addResponse.status)
 
-                //Assert - retrieve the added user from the database and verify return code
-                val retrieveResponse = retrieveUserByEmail(user1.email)
-                assertEquals(200, retrieveResponse.status)
+                val addUserResponse = addUser(user1)
 
-                //Assert - verify the contents of the retrieved user
-                val retrievedUser: User = jsonToObject(addResponse.body.toString())
-                assertEquals(user1.email, retrievedUser.email)
-                assertEquals(user1.name, retrievedUser.name)
+                //    add the activity and verify return code (using fixture data)
+                val retrievedUser: User = jsonToObject(addUserResponse.body.toString())
+                activity1.userId = retrievedUser.id
+
+                val addActivityResponse = addActivity(activity1)
+                assertEquals(201, addActivityResponse.status)
+
+                val retrievedActivity: Activity = jsonToObject(addActivityResponse.body.toString())
+                val retrieveActivityResponse = retrieveActivityByUser(retrievedActivity.userId)
+                if (retrieveActivityResponse.status == 200) {
+                    val retrievedActivities: ArrayList<Activity> = jsonToObject(retrieveActivityResponse.body.toString())
+                    assertNotEquals(0, retrievedActivities.size)
+                } else {
+                    assertEquals(404, retrieveActivityResponse.status)
+                }
 
                 //After - restore the db to previous state by deleting the added user
-                val deleteResponse = deleteUser(retrievedUser.id)
+                val deleteResponse = deleteActivity(retrievedActivity.id)
                 assertEquals(204, deleteResponse.status)
+
+                deleteUser(retrievedUser.id)
             }
         }
 
@@ -214,6 +230,47 @@ class UserControllerAPITest {
                         "\"height\":\"${user.height}\"," +
                         "\"weight\":\"${user.weight}\"," +
                         "\"profession\":\"${user.profession}\"" +
+                        "}")
+                .asJson()
+        }
+
+        //helper function to add a test activity to the database
+        private fun addActivity(activity: Activity): HttpResponse<JsonNode> {
+            return Unirest.post(origin + "/api/activities")
+                .body("{" +
+                        "\"description\":\"${activity.description}\"," +
+                        " \"duration\":\"${activity.duration}\", " +
+                        "\"calories\":\"${activity.calories}\", " +
+                        "\"started\":\"${activity.started}\", " +
+                        "\"userId\":\"${activity.userId}\"" +
+                        "}")
+                .asJson()
+        }
+
+        //helper function to delete a test user from the database
+        private fun deleteActivity(id: Int): HttpResponse<String> {
+            return Unirest.delete(origin + "/api/activity/${id}").asString()
+        }
+
+        //helper function to retrieve a test user from the database by email
+        private fun retrieveActivityByUser(id: Int): HttpResponse<String> {
+            return Unirest.get(origin + "/api/activities/${id}").asString()
+        }
+
+        //helper function to retrieve a test user from the database by id
+        private fun retrieveActivityById(id: Int): HttpResponse<String> {
+            return Unirest.get(origin + "/api/activity/${id}").asString()
+        }
+
+        //helper function to add a test user to the database
+        private fun updateActivity(activity: Activity): HttpResponse<JsonNode> {
+            return Unirest.patch(origin + "/api/activity/${activity.id}")
+                .body("{" +
+                        "\"description\":\"${activity.description}\"," +
+                        " \"duration\":\"${activity.duration}\", " +
+                        "\"calories\":\"${activity.calories}\", " +
+                        "\"started\":\"${activity.started}\", " +
+                        "\"userId\":\"${activity.userId}\"" +
                         "}")
                 .asJson()
         }

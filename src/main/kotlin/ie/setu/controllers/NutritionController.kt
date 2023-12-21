@@ -1,12 +1,13 @@
 package ie.setu.controllers
 
-import ie.setu.domain.Measurement
 import ie.setu.domain.Nutrition
 import ie.setu.domain.repository.NutritionDAO
 import ie.setu.domain.repository.UserDAO
 import ie.setu.utils.jsonObjectMapper
 import ie.setu.utils.jsonToObject
 import io.javalin.http.Context
+import org.joda.time.DateTime
+import java.time.format.DateTimeFormatter
 
 object NutritionController {
 
@@ -28,6 +29,38 @@ object NutritionController {
                 //mapper handles the deserialization of Joda date into a String.
                 ctx.json(jsonObjectMapper().writeValueAsString(nutritions))
             }
+        }
+    }
+
+    fun getNutritionsByDate(ctx: Context) {
+        if (NutritionController.userDao.findById(ctx.pathParam("user-id").toInt()) != null) {
+            val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+            val startDateTime: DateTime = DateTime.parse(ctx.queryParam("start-date"))
+            val endDateTime: DateTime = DateTime.parse(ctx.queryParam("end-date"))
+            val mapper = jsonObjectMapper()
+            if (startDateTime != null) {
+                ctx.status(200)
+                ctx.json(
+                    mapper.writeValueAsString(
+                        NutritionController.nutritionDAO.findByDate(
+                            ctx.pathParam("user-id").toInt(),
+                            startDateTime,
+                            endDateTime
+                        )
+                    )
+                )
+            }
+            else {
+                val nutritions = NutritionController.nutritionDAO.findByUserId(ctx.pathParam("user-id").toInt())
+                if (nutritions.isNotEmpty()) {
+                    //mapper handles the deserialization of Joda date into a String.
+                    val mapper = jsonObjectMapper()
+                    ctx.json(mapper.writeValueAsString(nutritions))
+                }
+            }
+        }
+        else {
+            ctx.status(404)
         }
     }
 

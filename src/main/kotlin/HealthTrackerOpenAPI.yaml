@@ -149,6 +149,170 @@ paths:
       responses:
         200:
           description: This activity has been updated
+  /api/measurements/{user-id}:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+        - $ref: '#/components/parameters/StartDate'
+        - $ref: '#/components/parameters/EndDate'
+      responses:
+        200:
+          description: These are the measurements for given user id and dates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Measurement'
+        404:
+          description: Measurements not found for given user-id
+    delete:
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      responses:
+        204:
+          description: All measurements for given user has been deleted
+        404:
+          description: Measurements not found for given user
+  /api/measurements:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Measurement'
+      responses:
+        201:
+          description: This measurement has been added
+  /api/measurements/{measurement-id}:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/MeasurementIdPath'
+      responses:
+        200:
+          description: This is the measurement for given id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Measurement'
+    delete:
+      parameters:
+        - $ref: '#/components/parameters/MeasurementIdPath'
+      responses:
+        200:
+          description: This measurement has been deleted
+    patch:
+      parameters:
+        - $ref: '#/components/parameters/MeasurementIdPath'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Measurement'
+      responses:
+        200:
+          description: This measurement has been updated
+  /api/nutritions/{user-id}:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+        - $ref: '#/components/parameters/StartDate'
+        - $ref: '#/components/parameters/EndDate'
+      responses:
+        200:
+          description: These are the nutrition consumed by given user id on dates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Nutrition'
+        404:
+          description: Nutritions not found for given user-id
+    delete:
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      responses:
+        204:
+          description: All Nutritions for given user has been deleted
+        404:
+          description: Nutritions not found for given user
+  /api/nutritions:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Nutrition'
+      responses:
+        201:
+          description: This Nutrition has been added
+  /api/nutritions/{nutrition-id}:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/NutritionIdPath'
+      responses:
+        200:
+          description: This is the nutrition for given id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Nutrition'
+    delete:
+      parameters:
+        - $ref: '#/components/parameters/NutritionIdPath'
+      responses:
+        200:
+          description: This nutrition has been deleted
+    patch:
+      parameters:
+        - $ref: '#/components/parameters/NutritionIdPath'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Nutrition'
+      responses:
+        200:
+          description: This nutrition has been updated
+  /api/usercred:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCred'
+      responses:
+        201:
+          description: This User Credential has been added
+  /api/usercred/{user-id}:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      responses:
+        200:
+          description: This is the User Credential for given id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCred'
+    delete:
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      responses:
+        200:
+          description: This User Credential has been deleted
+    patch:
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCred'
+      responses:
+        200:
+          description: This User Credential has been updated
 components:
   parameters:
     UserIdPath:
@@ -172,6 +336,34 @@ components:
       schema:
         type: integer
         example: 202301
+    MeasurementIdPath:
+      in: path
+      name: activity-id
+      required: true
+      schema:
+        type: integer
+        example: 202301\
+    NutritionIdPath:
+      in: path
+      name: activity-id
+      required: true
+      schema:
+        type: integer
+        example: 202301
+    StartDate:
+      name: startDate
+      in: query
+      description: The start date of the measurements to filter by
+      required: false
+      schema:
+        type: string
+    EndDate:
+      name: endDate
+      in: query
+      description: The end date of the measurements to filter by
+      required: false
+      schema:
+        type: string
   schemas:
     User:
       type: object
@@ -185,6 +377,27 @@ components:
         email:
           type: string
           example: john.smith@gmail.com
+        gender:
+          type: string
+          example: male
+        birthDate:
+          type: string
+          example: 1984-11-03T12:59:27
+        mobileNumber:
+          type: string
+          example: 293-232-9584
+        dietPreferences:
+          type: string
+          example: vegetarian
+        height:
+          type: string
+          example: 5.10
+        weight:
+          type: integer
+          example: 158
+        profession:
+          type: string
+          example: Information Technology
     Activity:
       type: object
       properties:
@@ -202,7 +415,79 @@ components:
           example: 200
         date:
           type: string
-          example: 2023/10/10
+          example: 2023-11-03
         user-id:
           type: integer
           example: 2023
+    Measurement:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 10
+        weight:
+          type: string
+          example: 150
+        chest:
+          type: string
+          example: 35
+        bicep:
+          type: string
+          example: 12
+        neck:
+          type: string
+          example: 18
+        abdomen:
+          type: string
+          example: 30
+        waist:
+          type: string
+          example: 31
+        lowerWaist:
+          type: string
+          example: 38
+        thigh:
+          type: string
+          example: 20
+        cough:
+          type: string
+          example: 11
+        measuredDate:
+          type: string
+          example: 2023-11-03T12:59:27
+        userId:
+          type: integer
+          example: 20
+    UserCred:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 20
+        password:
+          type: string
+          example: RGV2YSBTZW5h
+        userId:
+          type: integer
+          example: 20
+    Nutrition:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 20
+        partOfDay:
+          type: string
+          example: Lunch
+        foodName:
+          type: string
+          example: salmon with Salad
+        calories:
+          type: integer
+          example: 850
+        macroDate:
+          type: string
+          example: 2023-11-03T12:59:27
+        userId:
+          type: integer
+          example: 20
