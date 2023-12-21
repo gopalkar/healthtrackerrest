@@ -12,6 +12,6 @@ data class Measurement (var id: Int,
                         var waist: Double,
                         var lowerWaist: Double,
                         var thigh: Double,
-                        var cough: Double,
+                        var calves: Double,
                         var measuredDate: DateTime,
                         var userId: Int)

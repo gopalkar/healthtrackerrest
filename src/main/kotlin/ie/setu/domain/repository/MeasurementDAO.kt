@@ -59,7 +59,7 @@ class MeasurementDAO {
                 it[waist] = measurement.waist
                 it[lowerWaist] = measurement.lowerWaist
                 it[thigh] = measurement.thigh
-                it[cough] = measurement.cough
+                it[calves] = measurement.calves
                 it[measuredDate] = DateTime.parse(measurement.measuredDate.toString())
                 it[userId] = measurement.userId
             }
@@ -94,7 +94,7 @@ class MeasurementDAO {
                 it[waist] = measurement.waist
                 it[lowerWaist] = measurement.lowerWaist
                 it[thigh] = measurement.thigh
-                it[cough] = measurement.cough
+                it[calves] = measurement.calves
                 it[measuredDate] = DateTime.parse(measurement.measuredDate.toString())
             }
         }

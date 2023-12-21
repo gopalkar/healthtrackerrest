@@ -1,6 +1,7 @@
 package ie.setu.helpers
 
 import ie.setu.domain.Activity
+import ie.setu.domain.Measurement
 import ie.setu.domain.User
 import org.joda.time.DateTime
 
@@ -23,4 +24,8 @@ val users = arrayListOf<User>(
 
 val activities = arrayListOf<Activity>(
     Activity(description = "Running", duration = 45.0, calories = 450, started = DateTime("2023-11-10T05:59:27"), userId = 1, id = 1)
+)
+
+val measurements = arrayListOf<Measurement>(
+    Measurement(id = 1, weight = 145.0, chest = 35.0, bicep = 12.0, neck = 14.0, abdomen = 32.0, waist = 30.0, lowerWaist = 31.5, thigh = 21.0, calves = 13.5, measuredDate = DateTime("2023-11-10T05:59:27"), userId = 1)
 )

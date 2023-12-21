@@ -3,13 +3,12 @@ package ie.setu.controllers
 import ie.setu.config.DbConfig
 import ie.setu.domain.Activity
 import ie.setu.domain.User
-import ie.setu.helpers.ServerContainer
-import ie.setu.helpers.activities
-import ie.setu.helpers.users
+import ie.setu.helpers.*
 import ie.setu.utils.jsonToObject
 import kong.unirest.HttpResponse
 import kong.unirest.JsonNode
 import kong.unirest.Unirest
+import org.joda.time.DateTime
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Nested
@@ -17,7 +16,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ActivityControllerAPITest {
+class NutritionControllerAPITest {
 
     private val db = DbConfig().getDbConnection()
     private val app = ServerContainer.instance
@@ -133,81 +132,56 @@ class ActivityControllerAPITest {
         }
 
         @Nested
-        inner class UpdateActivities {
+        inner class UpdateUsers {
             @Test
-            fun `updating a Activity when it exists, returns a 204 response`() {
+            fun `updating a user when it exists, returns a 204 response`() {
 
-                val addUserResponse = addUser(user1)
+                //Arrange - add the user that we plan to do an update on
+                val addedResponse = addUser(user1)
+                val addedUser: User = jsonToObject(addedResponse.body.toString())
 
-                //    add the user and verify return code (using fixture data)
-                val retrievedUser: User = jsonToObject(addUserResponse.body.toString())
-                activity1.userId = retrievedUser.id
-                val addActivityResponse = addActivity(activity1)
-                assertEquals(201, addActivityResponse.status)
+                //Act & Assert - update the email and name of the retrieved user and assert 204 is returned
+                assertEquals(204, updateUser(addedUser, updatedName, updatedEmail).status)
 
-                //Assert - retrieve the added user from the database and verify return code
-                val retrievedActivity: Activity = jsonToObject(addActivityResponse.body.toString())
-                val retrieveActivityResponse = retrieveActivityById(retrievedActivity.id)
-                assertEquals(200, retrieveActivityResponse.status)
-
-                activity1.id = retrievedActivity.id
-                activity1.calories = 600
-                activity1.description = "Swimming"
-
-                val updatedActivityResponse = updateActivity(activity1)
-                assertEquals(204, updatedActivityResponse.status)
                 //Act & Assert - retrieve updated user and assert details are correct
-
-                val retrieveUpdatedActivity = retrieveActivityById(activity1.id)
-                val updatedActivityValidation: Activity = jsonToObject(retrieveUpdatedActivity.body.toString())
-                assertEquals(600, updatedActivityValidation.calories)
-                assertEquals("Swimming", updatedActivityValidation.description)
+                val updatedUserResponse = retrieveUserById(addedUser.id)
+                val updatedUser: User = jsonToObject(updatedUserResponse.body.toString())
+                assertEquals(updatedName, updatedUser.name)
+                assertEquals(updatedEmail, updatedUser.email)
 
                 //After - restore the db to previous state by deleting the added user
-                val deleteResponse = deleteActivity(retrievedActivity.id)
-                assertEquals(204, deleteResponse.status)
-
-                deleteUser(retrievedUser.id)
+                deleteUser(addedUser.id)
             }
 
             @Test
             fun `updating a user when it doesn't exist, returns a 404 response`() {
 
                 //Act & Assert - attempt to update the email and name of user that doesn't exist
-                val unknownActivity: Activity = activity1
-                assertEquals(404, updateActivity(unknownActivity).status)
+                val unknownUser: User = User(name = "Alice Wonderland", email = "alice@wonderland.com", gender = "Female", birthDate = DateTime("1986-11-03T05:59:27"), mobileNumber = "987-569-7854", dietPreferences = "Vegetarian", height = 5.10, weight = 150, profession = "Information Technology", id = -1)
+                assertEquals(404, updateUser(unknownUser, updatedName, updatedEmail).status)
             }
         }
 
         @Nested
-        inner class DeleteActivities {
+        inner class DeleteUsers {
             @Test
-            fun `deleting a Activity when it doesn't exist, returns a 404 response`() {
+            fun `deleting a user when it doesn't exist, returns a 404 response`() {
                 //Act & Assert - attempt to delete a user that doesn't exist
-                assertEquals(404, deleteActivity(-1).status)
+                assertEquals(404, deleteUser(-1).status)
             }
 
             @Test
-            fun `deleting a Activity when it exists, returns a 204 response`() {
+            fun `deleting a user when it exists, returns a 204 response`() {
 
-                val addUserResponse = addUser(user1)
-
-                //    add the user and verify return code (using fixture data)
-                val retrievedUser: User = jsonToObject(addUserResponse.body.toString())
-                activity1.userId = retrievedUser.id
-                val addActivityResponse = addActivity(activity1)
-                assertEquals(201, addActivityResponse.status)
-
-                //Assert - retrieve the added user from the database and verify return code
-                val retrievedActivity: Activity = jsonToObject(addActivityResponse.body.toString())
-                val retrieveActivityResponse = retrieveActivityById(retrievedActivity.id)
-                assertEquals(200, retrieveActivityResponse.status)
+                //Arrange - add the user that we plan to do a delete on
+                val addedResponse = addUser(user1)
+                val addedUser: User = jsonToObject(addedResponse.body.toString())
 
                 //Act & Assert - delete the added user and assert a 204 is returned
-                assertEquals(204, deleteActivity(retrievedActivity.id).status)
+                assertEquals(204, deleteUser(addedUser.id).status)
 
                 //Act & Assert - attempt to retrieve the deleted user --> 404 response
-                assertEquals(404, retrieveActivityById(retrievedActivity.id).status)
+                assertEquals(404, retrieveUserById(addedUser.id).status)
             }
         }
 
@@ -233,9 +207,31 @@ class ActivityControllerAPITest {
             return Unirest.delete(origin + "/api/users/$id").asString()
         }
 
+        //helper function to retrieve a test user from the database by email
+        private fun retrieveUserByEmail(email: String): HttpResponse<String> {
+            return Unirest.get(origin + "/api/users/email/${email}").asString()
+        }
+
         //helper function to retrieve a test user from the database by id
         private fun retrieveUserById(id: Int): HttpResponse<String> {
             return Unirest.get(origin + "/api/users/${id}").asString()
+        }
+
+        //helper function to add a test user to the database
+        private fun updateUser(user: User, name: String, email: String): HttpResponse<JsonNode> {
+            return Unirest.patch(origin + "/api/users/${user.id}")
+                .body("{" +
+                        "\"name\":\"${name}\", " +
+                        "\"email\":\"${email}\"," +
+                        "\"gender\":\"${user.gender}\"," +
+                        "\"birthDate\":\"${user.birthDate}\"," +
+                        "\"mobileNumber\":\"${user.mobileNumber}\"," +
+                        "\"dietPreferences\":\"${user.dietPreferences}\"," +
+                        "\"height\":\"${user.height}\"," +
+                        "\"weight\":\"${user.weight}\"," +
+                        "\"profession\":\"${user.profession}\"" +
+                        "}")
+                .asJson()
         }
 
         //helper function to add a test activity to the database
