@@ -97,10 +97,15 @@ class JavalinConfig {
                     delete(NutritionController::deleteNutritionsByUserId)
                 }
             }
-            path("/api/nutrition/{nutrition-id}") {
-                get(NutritionController::getNutritionByNutritionId)
-                delete(NutritionController::deleteNutrition)
-                patch(NutritionController::updateNutrition)
+            path("/api/nutrition") {
+                path("/search") {
+                    get(NutritionController::getNutritionSearch)
+                }
+                path("{nutrition-id}") {
+                    get(NutritionController::getNutritionByNutritionId)
+                    delete(NutritionController::deleteNutrition)
+                    patch(NutritionController::updateNutrition)
+                }
             }
         }
     }

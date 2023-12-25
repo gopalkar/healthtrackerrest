@@ -37,6 +37,10 @@ fun mapToNutrition(it: ResultRow) = Nutrition(
     partOfDay = it[Nutritions.partOfDay],
     foodName = it[Nutritions.foodName],
     calories = it[Nutritions.calories],
+    cholesterol = it[Nutritions.cholesterol],
+    protein = it[Nutritions.protein],
+    fat = it[Nutritions.fat],
+    fiber = it[Nutritions.fiber],
     macroDate = it[Nutritions.macroDate],
     userId = it[Nutritions.userId]
 )

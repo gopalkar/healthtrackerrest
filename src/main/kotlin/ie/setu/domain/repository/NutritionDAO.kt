@@ -47,15 +47,19 @@ class NutritionDAO {
     }
 
     //Save an nutrition to the database
-    fun save(nutrition: Nutrition){
-        transaction {
+    fun save(nutrition: Nutrition): Int?{
+        return transaction {
             Nutritions.insert {
                 it[partOfDay] = nutrition.partOfDay
                 it[foodName] = nutrition.foodName
                 it[calories] = nutrition.calories
+                it[cholesterol] = nutrition.cholesterol
+                it[protein] = nutrition.protein
+                it[fat] = nutrition.fat
+                it[fiber] = nutrition.fiber
                 it[macroDate] = nutrition.macroDate
                 it[userId] = nutrition.userId
-            }
+            } get Nutritions.id
         }
     }
 
@@ -75,13 +79,17 @@ class NutritionDAO {
         }
     }
 
-    fun update(id: Int, nutrition: Nutrition){
-        transaction {
+    fun update(id: Int, nutrition: Nutrition): Int {
+        return transaction {
             Nutritions.update ({
                 Nutritions.id eq id}) {
                 it[partOfDay] = nutrition.partOfDay
                 it[foodName] = nutrition.foodName
                 it[calories] = nutrition.calories
+                it[cholesterol] = nutrition.cholesterol
+                it[protein] = nutrition.protein
+                it[fat] = nutrition.fat
+                it[fiber] = nutrition.fiber
                 it[macroDate] = nutrition.macroDate
             }
         }

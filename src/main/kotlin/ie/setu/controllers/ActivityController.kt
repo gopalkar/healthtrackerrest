@@ -97,5 +97,4 @@ object ActivityController {
             ctx.status(201)
         }
     }
-
 }
