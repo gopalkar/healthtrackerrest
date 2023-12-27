@@ -5,7 +5,6 @@ import ie.setu.utils.jsonObjectMapper
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.*
 import io.javalin.json.JavalinJackson
-import io.javalin.vue.VueComponent
 
 class JavalinConfig {
 
@@ -15,6 +14,11 @@ class JavalinConfig {
             it.jsonMapper(JavalinJackson(jsonObjectMapper()))
             it.staticFiles.enableWebjars()
             it.vue.vueAppName="app"
+            it.plugins.enableCors {
+                it.add {
+                    it.anyHost();
+                }
+            }
         }
             .apply{
                 exception(Exception::class.java) { e, ctx -> e.printStackTrace() }
@@ -37,10 +41,13 @@ class JavalinConfig {
 // The @routeComponent that we added in layout.html earlier will be replaced
 // by the String inside the VueComponent. This means a call to / will load
 // the layout and display our <home-page> component.
-            get("/", VueComponent("<home-page></home-page>"))
+/*
+            get("/", VueComponent("<login-page></login-page>"))
+            get("/home", VueComponent("<home-page></home-page>"))
             get("/users", VueComponent("<user-overview></user-overview>"))
             get("/users/{user-id}", VueComponent("<user-profile></user-profile>"))
             get("/users/{user-id}/activities", VueComponent("<user-activity-overview></user-activity-overview>"))
+*/
             path("/api/users") {
                 get(UserController::getAllUsers)
                 post(UserController::addUser)
