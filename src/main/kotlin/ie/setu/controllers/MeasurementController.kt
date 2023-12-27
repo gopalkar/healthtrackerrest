@@ -24,16 +24,24 @@ object MeasurementController {
         ctx.json(mapper.writeValueAsString(MeasurementController.measurementDAO.getAll()))
     }
 
-    fun getMeasurementsByUserId(ctx: Context) {
+/*    fun getMeasurementsByUserId(ctx: Context) {
         if (MeasurementController.userDao.findById(ctx.pathParam("user-id").toInt()) != null) {
             val measurements = MeasurementController.measurementDAO.findByUserId(ctx.pathParam("user-id").toInt())
             if (measurements.isNotEmpty()) {
                 //mapper handles the deserialization of Joda date into a String.
                 val mapper = jsonObjectMapper()
                 ctx.json(mapper.writeValueAsString(measurements))
+                ctx.status(200)
             }
+            else {
+                ctx.status(404)
+            }
+
         }
-    }
+        else {
+            ctx.status(404)
+        }
+    }*/
 
     fun getMeasurementsByDate(ctx: Context) {
         if (MeasurementController.userDao.findById(ctx.pathParam("user-id").toInt()) != null) {
@@ -41,25 +49,14 @@ object MeasurementController {
             val startDateTime: DateTime = DateTime.parse(ctx.queryParam("start-date"))
             val endDateTime: DateTime = DateTime.parse(ctx.queryParam("end-date"))
             val mapper = jsonObjectMapper()
-            if (startDateTime != null) {
+            val measurements = MeasurementController.measurementDAO.findByDate(ctx.pathParam("user-id").toInt(),startDateTime, endDateTime)
+            if (measurements.isNotEmpty()) {
+                //mapper handles the deserialization of Joda date into a String.
                 ctx.status(200)
-                ctx.json(
-                    mapper.writeValueAsString(
-                        MeasurementController.measurementDAO.findByDate(
-                            ctx.pathParam("user-id").toInt(),
-                            startDateTime,
-                            endDateTime
-                        )
-                    )
-                )
+                ctx.json(mapper.writeValueAsString(measurements))
             }
             else {
-                val measurements = MeasurementController.measurementDAO.findByUserId(ctx.pathParam("user-id").toInt())
-                if (measurements.isNotEmpty()) {
-                    //mapper handles the deserialization of Joda date into a String.
-                    val mapper = jsonObjectMapper()
-                    ctx.json(mapper.writeValueAsString(measurements))
-                }
+                ctx.status(404)
             }
         }
         else {
@@ -73,6 +70,10 @@ object MeasurementController {
             //mapper handles the deserialization of Joda date into a String.
             val mapper = jsonObjectMapper()
             ctx.json(mapper.writeValueAsString(measurements))
+            ctx.status(200)
+        }
+        else {
+            ctx.status(404)
         }
     }
 
@@ -83,25 +84,43 @@ object MeasurementController {
                 //mapper handles the deserialization of Joda date into a String.
                 MeasurementController.measurementDAO.deleteAll(ctx.pathParam("user-id").toInt())
                 ctx.json("""{"message":"Measurements Deleted Successfully"}""")
+                ctx.status(204)
+            }
+            else {
+                ctx.status(404)
             }
         }
     }
 
     fun updateMeasurement(ctx: Context) {
         val measurement = jsonToObject<Measurement>(ctx.body())
-        MeasurementController.measurementDAO.update(ctx.pathParam("measurement-id").toInt(), measurement)
-        ctx.json("""{"message":"Measurement Updated Successfully"}""")
+        val measurements = MeasurementController.measurementDAO.findByMeasurementsId(ctx.pathParam("measurement-id").toInt())
+        if (measurements != null) {
+            measurement.id = measurements.id
+            MeasurementController.measurementDAO.update(ctx.pathParam("measurement-id").toInt(), measurement)
+            ctx.json(measurement)
+            ctx.status(204)
+        }
+        else   {
+            ctx.status(404)
+        }
     }
 
     fun deleteMeasurement(ctx: Context) {
-        MeasurementController.measurementDAO.delete(ctx.pathParam("measurement-id").toInt())
-        ctx.json("""{"message":"Measurement Deleted Successfully"}""")
+        if (MeasurementController.measurementDAO.delete(ctx.pathParam("measurement-id").toInt()) != 0 )
+            ctx.status(204)
+        else
+            ctx.status(404)
     }
 
     fun addMeasurement(ctx: Context) {
         //mapper handles the serialisation of Joda date into a String.
         val measurement = jsonToObject<Measurement>(ctx.body())
-        MeasurementController.measurementDAO.save(measurement)
-        ctx.json(jsonObjectMapper().writeValueAsString(measurement))
+        val measurementId = MeasurementController.measurementDAO.save(measurement)
+        if (measurementId != null) {
+            measurement.id = measurementId
+            ctx.json(measurement)
+            ctx.status(201)
+        }
     }
 }

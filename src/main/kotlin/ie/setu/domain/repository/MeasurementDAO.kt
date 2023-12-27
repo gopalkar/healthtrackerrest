@@ -48,8 +48,8 @@ class MeasurementDAO {
     }
 
     //Save an Measurement to the database
-    fun save(measurement: Measurement){
-        transaction {
+    fun save(measurement: Measurement) : Int? {
+        return transaction {
             Measurements.insert {
                 it[weight] = measurement.weight
                 it[chest] = measurement.chest
@@ -62,7 +62,7 @@ class MeasurementDAO {
                 it[calves] = measurement.calves
                 it[measuredDate] = DateTime.parse(measurement.measuredDate.toString())
                 it[userId] = measurement.userId
-            }
+            } get Measurements.id
         }
     }
 
@@ -82,8 +82,8 @@ class MeasurementDAO {
         }
     }
 
-    fun update(id: Int, measurement: Measurement){
-        transaction {
+    fun update(id: Int, measurement: Measurement): Int {
+        return transaction {
             Measurements.update ({
                 Measurements.id eq id}) {
                 it[weight] = measurement.weight
