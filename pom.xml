@@ -135,7 +135,7 @@
 
     <build>
         <sourceDirectory>src/main/kotlin</sourceDirectory>
-        <testSourceDirectory>src/test/kotlin/ie/setu/controllers</testSourceDirectory>
+        <testSourceDirectory>src/test/kotlin</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
@@ -191,7 +191,7 @@
                 <version>2.22.2</version>
                 <configuration>
                     <includes>
-                        <include>Test*</include>
+                        <include>ie.setu.controllers.*Test</include>
                         <include>*Test</include>
                     </includes>
                 </configuration>
