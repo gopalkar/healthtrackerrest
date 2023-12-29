@@ -4,36 +4,36 @@ on: [push, pull_request]
 
 jobs:
 
-#  package:
-#    name: Maven Package
-#    runs-on: ubuntu-latest
+  package:
+    name: Maven Package
+    runs-on: ubuntu-latest
 
-#    steps:
-#      - uses: actions/checkout@v3
-#      - uses: actions/setup-java@v3
-#        with:
-#          distribution: 'temurin'
-#          java-version: '17'
-#          cache: 'maven'
-#      - name: Maven Package
-#        run: mvn -B clean package -DskipTests
-#  test:
-#    name: Maven Tests
-#    needs: package
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - uses: actions/checkout@v3
-#      - uses: actions/setup-java@v3
-#        with:
-#          distribution: 'temurin'
-#          java-version: '17'
-#          cache: 'maven'
-#      - name: Maven Verify
-#        run: mvn -B clean verify
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+      - name: Maven Package
+        run: mvn -B clean package -DskipTests
+  test:
+    name: Maven Tests
+    needs: package
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+      - name: Maven Verify
+        run: mvn -B clean verify
   deploy:
     name: Railway Deploy
-#    needs: test
+    needs: test
     runs-on: ubuntu-latest  
     
     steps:
