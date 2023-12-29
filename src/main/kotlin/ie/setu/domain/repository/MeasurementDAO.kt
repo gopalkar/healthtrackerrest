@@ -34,6 +34,7 @@ class MeasurementDAO {
         return transaction {
             Measurements
                 .select() { (Measurements.userId eq userId) and (Measurements.measuredDate greaterEq startDate) and (Measurements.measuredDate lessEq endDate) }
+                . orderBy(Measurements.measuredDate, SortOrder.DESC)
                 .map{mapToMeasurement(it)}
         }
     }

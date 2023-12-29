@@ -33,6 +33,7 @@ class ActivityDAO {
         return transaction {
             Activities
                 .select {Activities.userId eq userId}
+                .orderBy(Activities.started, SortOrder.DESC)
                 .map {mapToActivity(it)}
         }
     }

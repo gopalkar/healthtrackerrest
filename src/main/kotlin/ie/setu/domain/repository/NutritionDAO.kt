@@ -37,6 +37,7 @@ class NutritionDAO {
                 .map{ mapToNutrition(it) }
         }
     }
+
     //Find all nutritions for a specific user id
     fun findByUserId(userId: Int): List<Nutrition>{
         return transaction {
