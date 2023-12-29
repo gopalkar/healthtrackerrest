@@ -15,7 +15,7 @@ __Name:__ Karthikeyan Gopal
 > mvn clean install
 
 ##  OpenAPI Specifications
-[OpenAPI Speicifications](relative/HealthTrackerOpenAPI.yaml)
+[OpenAPI Speicifications](./HealthTrackerOpenAPI.yaml)
 
 ## Database
 > API based postgresSql database is used for all backend storage.
