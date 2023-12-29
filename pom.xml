@@ -107,11 +107,6 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>2.12.4</version>
         </dependency>
-        <dependency>
-            <groupId>com.konghq</groupId>
-            <artifactId>unirest-java</artifactId>
-            <version>3.11.06</version>
-        </dependency>
         <!-- standalone jar with shaded dependencies (renames dependencies to help avoid
                     clashing with other versions of dependencies) -->
         <dependency>
@@ -191,7 +186,9 @@
                 <version>2.22.2</version>
                 <configuration>
                     <includes>
-                        <include>**/*Test*</include>
+                        <include>ActvityControllerAPITest.kt</include>
+                        <include>MeasurementControllerAPITest.kt</include>
+                        <include>Test*</include>
                         <include>*Test</include>
                     </includes>
                 </configuration>
