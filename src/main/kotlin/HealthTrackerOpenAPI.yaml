@@ -275,7 +275,18 @@ paths:
       responses:
         200:
           description: This nutrition has been updated
-  /api/usercred:
+  /api/nutrition/search:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/SearchQuery'
+      responses:
+        200:
+          description: This is the nutrient retrieved from edaman for given search query
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Nutrient'
+  /api/usercreds:
     post:
       requestBody:
         content:
@@ -285,7 +296,7 @@ paths:
       responses:
         201:
           description: This User Credential has been added
-  /api/usercred/{user-id}:
+  /api/usercreds/{user-id}:
     get:
       parameters:
         - $ref: '#/components/parameters/UserIdPath'
@@ -364,6 +375,14 @@ components:
       required: false
       schema:
         type: string
+    SearchQuery:
+      name: searchQuery
+      in: query
+      description: The Search Query to filter retrieve nutrient from edaman API
+      required: false
+      schema:
+        type: string
+
   schemas:
     User:
       type: object
@@ -485,9 +504,39 @@ components:
         calories:
           type: integer
           example: 850
+        cholesterol:
+          type: integer
+          example: 20
+        protein:
+          type: integer
+          example: 10
+        fat:
+          type: integer
+          example: 5
+        fiber:
+          type: integer
+          example: 2
         macroDate:
           type: string
           example: 2023-11-03T12:59:27
         userId:
           type: integer
           example: 20
+    Nutrient:
+      type: object
+      properties:
+        fibtg:
+          type: integer
+          example: 2
+        procnt:
+          type: integer
+          example: 18
+        fat:
+          type: integer
+          example: 15
+        enerc_KCAL:
+          type: integer
+          example: 215
+        chocdf:
+          type: integer
+          example: 2
